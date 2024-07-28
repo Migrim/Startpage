@@ -4,8 +4,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    padding-top: 50px;
+    justify-content: center;
     height: 100vh;
     margin: 0;
     font-family: Arial, sans-serif;
@@ -29,66 +28,85 @@ body {
     border-radius: 50%;
     filter: blur(50px);
     z-index: 1;
-    animation: randomMovement 12s infinite alternate ease-in-out;
+    animation: randomMovement 50s infinite alternate ease-in-out;
+}
+
+.circle1, .circle2, .circle3, .circle4, .circle5 {
+    position: absolute;
+    border-radius: 50%;
 }
 
 .circle1 {
     width: 100px;
     height: 100px;
     top: 40%;
-    left: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background: linear-gradient(135deg, #31f30a, #0219e9);
+    animation: randomMovement 50s infinite alternate ease-in-out;
     animation-delay: 0s;
+    animation-fill-mode: both;
 }
 
 .circle2 {
     width: 80px;
     height: 80px;
-    top: 35%;
-    left: 55%;
+    top: 45%;
+    left: calc(50% + 150px);
+    transform: translateX(-50%);
     background: linear-gradient(135deg, #005bb5, #0083cc);
+    animation: randomMovement 50s infinite alternate ease-in-out;
     animation-delay: 1s;
+    animation-fill-mode: both;
 }
 
 .circle3 {
     width: 70px;
     height: 70px;
-    top: 50%;
-    left: 50%;
+    top: 60%;
+    left: calc(50% - 50px);
+    transform: translateX(-50%);
     background: linear-gradient(135deg, #6e21a2, #923fba);
+    animation: randomMovement 50s infinite alternate ease-in-out;
     animation-delay: 2s;
+    animation-fill-mode: both;
 }
 
 .circle4 {
     width: 120px;
     height: 120px;
-    top: 44%;
-    left: 30%;
+    top: 55%;
+    left: calc(50% - 200px);
+    transform: translateX(-50%);
     background: linear-gradient(135deg, #cc4230, #cc3700);
+    animation: randomMovement 50s infinite alternate ease-in-out;
     animation-delay: 3s;
+    animation-fill-mode: both;
 }
 
 .circle5 {
     width: 90px;
     height: 90px;
-    top: 40%;
-    left: 60%;
+    top: 70%;
+    left: calc(50% + 200px);
+    transform: translateX(-50%);
     background: linear-gradient(135deg, #3b005b, #7a00b0);
-    animation-delay: 4s;
+    animation: randomMovement 50s infinite alternate ease-in-out;
+    animation-delay: 2s;
+    animation-fill-mode: both;
 }
-
 .search-bar {
     display: flex;
     align-items: center;
+    justify-content: center;
     background: rgba(20, 20, 20, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.027); 
+    border: 1px solid rgba(255, 255, 255, 0.027);
     border-radius: 15px;
     padding: 10px 15px;
     backdrop-filter: blur(5px);
     box-shadow: 0 4px 10px rgba(20, 20, 20, 0.4);
-    width: 30%;
+    width: 412px;
     z-index: 2;
-    margin-bottom: 5px;
 }
 
 .material-icons {
@@ -107,12 +125,26 @@ input[type="text"] {
 }
 
 @keyframes randomMovement {
-    0% { transform: translate(0, 0); }
-    20% { transform: translate(15px, -25px); }
-    40% { transform: translate(-20px, 20px); }
-    60% { transform: translate(30px, -15px); }
-    80% { transform: translate(-25px, 25px); }
-    100% { transform: translate(20px, -20px); }
+    0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+    5% { transform: translate(-10px, 15px) rotate(-5deg) scale(1.03); }
+    10% { transform: translate(20px, -15px) rotate(10deg) scale(0.97); }
+    15% { transform: translate(-25px, 10px) rotate(-10deg) scale(1.05); }
+    20% { transform: translate(10px, -20px) rotate(5deg) scale(0.95); }
+    25% { transform: translate(-5px, 25px) rotate(-15deg) scale(1.07); }
+    30% { transform: translate(15px, -30px) rotate(20deg) scale(0.93); }
+    35% { transform: translate(-20px, 35px) rotate(-10deg) scale(1.04); }
+    40% { transform: translate(25px, -10px) rotate(10deg) scale(0.96); }
+    45% { transform: translate(-30px, 15px) rotate(-5deg) scale(1.06); }
+    50% { transform: translate(20px, -5px) rotate(15deg) scale(0.94); }
+    55% { transform: translate(-15px, 20px) rotate(-20deg) scale(1.05); }
+    60% { transform: translate(10px, -25px) rotate(10deg) scale(1.01); }
+    65% { transform: translate(-20px, 30px) rotate(-10deg) scale(0.98); }
+    70% { transform: translate(15px, -35px) rotate(5deg) scale(1.03); }
+    75% { transform: translate(-25px, 20px) rotate(-15deg) scale(0.95); }
+    80% { transform: translate(30px, -10px) rotate(10deg) scale(1.02); }
+    85% { transform: translate(-20px, 5px) rotate(-5deg) scale(1.04); }
+    90% { transform: translate(15px, -25px) rotate(15deg) scale(0.97); }
+    95% { transform: translate(-10px, 30px) rotate(-10deg) scale(1.03); }
 }
 
 .shortcuts {
@@ -140,14 +172,14 @@ input[type="text"] {
 
 .shortcut img {
     width: 24px;
-    height: 24px; 
+    height: 24px;
 }
 
 .shortcut .material-icons {
     font-size: 24px;
     color: #ffffff;
     display: block;
-    margin: 0 auto; 
+    margin: 0 auto;
 }
 
 .weather-widget {
@@ -164,7 +196,6 @@ input[type="text"] {
     width: 200px;
     height: 150px;
     margin-bottom: 20px;
-    margin-top: 140px;
     color: #ffffff;
     font-family: Arial, sans-serif;
     font-size: 16px;
@@ -172,24 +203,26 @@ input[type="text"] {
     perspective: 1000px;
     transition: transform 0.2s ease-out;
 }
+
 .weather-widget.tilted {
     transition: transform 0.1s ease-out;
 }
+
 .weather-widget .material-icons {
     font-size: 48px;
-    color: inherit; 
-    display: none; 
-    opacity: 0; 
-    transform: scale(0.8); 
-    transition: opacity 0.5s ease, transform 0.5s ease; 
+    color: inherit;
+    display: none;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
 #weather-icon {
-    display: inline-block; 
-    color: inherit; 
-    margin-bottom: 15px; 
-    opacity: 1; 
-    transform: scale(1); 
+    display: inline-block;
+    color: inherit;
+    margin-bottom: 15px;
+    opacity: 1;
+    transform: scale(1);
 }
 
 .weather-info {
