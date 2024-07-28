@@ -14,9 +14,137 @@
     <div class="background-circle circle4"></div>
     <div class="background-circle circle5"></div>
 
+    <div class="weather-widget">
+        <div class="weather-icon">
+            <span class="material-icons skeleton-icon" id="skeleton-weather-icon"></span>
+            <span class="material-icons" id="weather-icon" style="display:none;">wb_sunny</span>
+        </div>
+        <div class="weather-info">
+            <div class="temperature-container">
+                <div class="temperature skeleton-text" id="skeleton-temperature"></div>
+                <div class="temperature" id="temperature" style="display:none;"></div>
+            </div>
+            <div class="location-container">
+                <div class="location skeleton-text" id="skeleton-location"></div>
+                <div class="location" id="location" style="display:none;"></div>
+            </div>
+        </div>
+    </div>    
+
     <form action="https://www.google.com/search" method="get" class="search-bar">
         <span class="material-icons">search</span>
         <input type="text" name="q" placeholder="Search Google.com">
     </form>
+
+    <div class="shortcuts">
+        <div class="shortcut" onclick="handleShortcutClick(event, this)">
+            <span class="material-icons">add</span>
+        </div>
+        <div class="shortcut" onclick="handleShortcutClick(event, this)">
+            <span class="material-icons">add</span>
+        </div>
+        <div class="shortcut" onclick="handleShortcutClick(event, this)">
+            <span class="material-icons">add</span>
+        </div>
+        <div class="shortcut" onclick="handleShortcutClick(event, this)">
+            <span class="material-icons">add</span>
+        </div>
+        <div class="shortcut" onclick="handleShortcutClick(event, this)">
+            <span class="material-icons">add</span>
+        </div>
+    </div>
+
+    <script>
+        function handleShortcutClick(event, element) {
+            let url = element.getAttribute('data-url');
+            
+            if (url && event.shiftKey) {
+                let newUrl = prompt("Enter the new URL:", url);
+                if (newUrl) {
+                    let faviconUrl = `https://www.google.com/s2/favicons?sz=64&domain_url=${newUrl}`;
+                    element.innerHTML = `<img src="${faviconUrl}" alt="favicon" width="32" height="32">`;
+                    element.setAttribute('data-url', newUrl);
+                }
+            } else if (url) {
+                window.location.href = url;
+            } else {
+                let newUrl = prompt("Enter the URL:");
+                if (newUrl) {
+                    let faviconUrl = `https://www.google.com/s2/favicons?sz=64&domain_url=${newUrl}`;
+                    element.innerHTML = `<img src="${faviconUrl}" alt="favicon" width="32" height="32">`;
+                    element.setAttribute('data-url', newUrl);
+                }
+            }
+        }
+
+        function updateWeatherData(latitude, longitude) {
+            const apiKey = '61894ea1f7464ad581e144615242807';
+            const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${latitude},${longitude}&aqi=no`;
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('temperature').innerText = `${data.current.temp_c}°C`;
+                    document.getElementById('location').innerText = data.location.name;
+                    document.getElementById('weather-icon').innerText = getWeatherIcon(data.current.condition.text);
+                    showWeatherData();
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        }
+
+        function getWeatherIcon(weather) {
+            const iconMap = {
+                'Clear': 'wb_sunny',
+                'Partly cloudy': 'wb_cloudy',
+                'Cloudy': 'cloud',
+                'Overcast': 'cloud',
+                'Mist': 'blur_on',
+                'Patchy rain possible': 'umbrella',
+                'Rain': 'umbrella',
+                'Thunderstorm': 'flash_on',
+                'Snow': 'ac_unit',
+                'Sleet': 'ac_unit',
+                'Hail': 'grain',
+                'Fog': 'blur_on',
+                'Other': 'wb_sunny'
+            };
+            return iconMap[weather] || 'wb_sunny';
+        }
+
+        function showWeatherData() {
+            document.getElementById('skeleton-weather-icon').style.display = 'none';
+            document.getElementById('skeleton-temperature').style.display = 'none';
+            document.getElementById('skeleton-location').style.display = 'none';
+
+            document.getElementById('weather-icon').style.display = 'inline-block';
+            document.getElementById('temperature').style.display = 'inline-block';
+            document.getElementById('location').style.display = 'inline-block';
+        }
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        const { latitude, longitude } = position.coords;
+                        updateWeatherData(latitude, longitude);
+                    },
+                    error => {
+                        console.error('Error occurred while fetching location:', error);
+                    }
+                );
+            } else {
+                console.log("Geolocation is not supported by this browser.");
+            }
+        }
+
+        getLocation();
+    </script>    
 </body>
 </html>
