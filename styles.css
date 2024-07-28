@@ -13,6 +13,17 @@ body {
     overflow: hidden;
 }
 
+.reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
+.reveal.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 .background-circle {
     position: absolute;
     border-radius: 50%;
@@ -151,26 +162,41 @@ input[type="text"] {
     backdrop-filter: blur(5px);
     box-shadow: 0 4px 10px rgba(20, 20, 20, 0.4);
     width: 200px;
-    height: 120px;
+    height: 150px;
     margin-bottom: 20px;
     margin-top: 140px;
     color: #ffffff;
     font-family: Arial, sans-serif;
     font-size: 16px;
     z-index: 2;
+    perspective: 1000px;
+    transition: transform 0.2s ease-out;
+}
+.weather-widget.tilted {
+    transition: transform 0.1s ease-out;
+}
+.weather-widget .material-icons {
+    font-size: 48px;
+    color: inherit; 
+    display: none; 
+    opacity: 0; 
+    transform: scale(0.8); 
+    transition: opacity 0.5s ease, transform 0.5s ease; 
 }
 
-.weather-icon .material-icons {
-    font-size: 48px;
-    color: #ffc107;
-    margin-bottom: 10px;
+#weather-icon {
+    display: inline-block; 
+    color: inherit; 
+    margin-bottom: 15px; 
+    opacity: 1; 
+    transform: scale(1); 
 }
 
 .weather-info {
     text-align: center;
 }
 
-.temperature-container, .location-container {
+.temperature-container, .condition-container, .location-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -179,6 +205,12 @@ input[type="text"] {
 .temperature {
     font-size: 24px;
     font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.condition {
+    font-size: 14px;
+    color: #ffffffb3;
     margin-bottom: 5px;
 }
 

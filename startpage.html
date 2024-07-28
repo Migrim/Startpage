@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dark Themed Google Search</title>
+    <title>Search</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -17,19 +17,23 @@
     <div class="weather-widget">
         <div class="weather-icon">
             <span class="material-icons skeleton-icon" id="skeleton-weather-icon"></span>
-            <span class="material-icons" id="weather-icon" style="display:none;">wb_sunny</span>
+            <span class="material-icons" id="weather-icon"></span>
         </div>
         <div class="weather-info">
             <div class="temperature-container">
                 <div class="temperature skeleton-text" id="skeleton-temperature"></div>
-                <div class="temperature" id="temperature" style="display:none;"></div>
+                <div class="temperature" id="temperature"></div>
+            </div>
+            <div class="condition-container">
+                <div class="condition skeleton-text" id="skeleton-condition"></div>
+                <div class="condition" id="condition"></div>
             </div>
             <div class="location-container">
                 <div class="location skeleton-text" id="skeleton-location"></div>
-                <div class="location" id="location" style="display:none;"></div>
+                <div class="location" id="location"></div>
             </div>
         </div>
-    </div>    
+    </div>   
 
     <form action="https://www.google.com/search" method="get" class="search-bar">
         <span class="material-icons">search</span>
@@ -55,6 +59,39 @@
     </div>
 
     <script>
+        window.addEventListener('load', function() {
+            const elements = document.querySelectorAll('.reveal');
+            elements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.classList.add('show');
+                }, index * 200); 
+            });
+        });
+
+        document.querySelector('.weather-widget').addEventListener('mouseenter', function (e) {
+            const weatherWidget = e.currentTarget;
+            const maxTilt = 10; 
+
+            function tilt(event) {
+                const rect = weatherWidget.getBoundingClientRect();
+                const x = event.clientX - rect.left - rect.width / 2;
+                const y = event.clientY - rect.top - rect.height / 2;
+
+                const tiltX = (-maxTilt * y) / (rect.height / 2);
+                const tiltY = (maxTilt * x) / (rect.width / 2);
+
+                weatherWidget.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+            }
+
+            function resetTilt() {
+                weatherWidget.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+                weatherWidget.removeEventListener('mousemove', tilt);
+            }
+
+            weatherWidget.addEventListener('mousemove', tilt);
+            weatherWidget.addEventListener('mouseleave', resetTilt);
+        });
+
         function handleShortcutClick(event, element) {
             let url = element.getAttribute('data-url');
             
@@ -90,6 +127,7 @@
                 })
                 .then(data => {
                     document.getElementById('temperature').innerText = `${data.current.temp_c}°C`;
+                    document.getElementById('condition').innerText = getConditionDescription(data.current.condition.text);
                     document.getElementById('location').innerText = data.location.name;
                     document.getElementById('weather-icon').innerText = getWeatherIcon(data.current.condition.text);
                     showWeatherData();
@@ -101,30 +139,68 @@
 
         function getWeatherIcon(weather) {
             const iconMap = {
-                'Clear': 'wb_sunny',
-                'Partly cloudy': 'wb_cloudy',
-                'Cloudy': 'cloud',
-                'Overcast': 'cloud',
-                'Mist': 'blur_on',
-                'Patchy rain possible': 'umbrella',
-                'Rain': 'umbrella',
-                'Thunderstorm': 'flash_on',
-                'Snow': 'ac_unit',
-                'Sleet': 'ac_unit',
-                'Hail': 'grain',
-                'Fog': 'blur_on',
-                'Other': 'wb_sunny'
+                'Clear': { icon: 'wb_sunny', color: '#FFD700' }, 
+                'Partly cloudy': { icon: 'wb_cloudy', color: '#B0C4DE' }, 
+                'Cloudy': { icon: 'cloud', color: '#A9A9A9' }, 
+                'Overcast': { icon: 'cloud', color: '#808080' }, 
+                'Mist': { icon: 'blur_on', color: '#D3D3D3' }, 
+                'Patchy rain possible': { icon: 'umbrella', color: '#4682B4' }, 
+                'Rain': { icon: 'umbrella', color: '#0000FF' }, 
+                'Thunderstorm': { icon: 'flash_on', color: '#FF4500' }, 
+                'Snow': { icon: 'ac_unit', color: '#FFFFFF' }, 
+                'Sleet': { icon: 'ac_unit', color: '#FFFFFF' }, 
+                'Hail': { icon: 'grain', color: '#708090' }, 
+                'Fog': { icon: 'blur_on', color: '#C0C0C0' }, 
+                'Other': { icon: 'wb_sunny', color: '#FFD700' } 
             };
-            return iconMap[weather] || 'wb_sunny';
+
+            const weatherData = iconMap[weather] || iconMap['Other'];
+            const weatherIconElement = document.getElementById('weather-icon');
+
+            weatherIconElement.textContent = weatherData.icon;
+            weatherIconElement.style.color = weatherData.color;
+            weatherIconElement.style.display = 'inline-block'; 
+            return weatherData.icon; 
+        }
+
+        function getConditionDescription(condition) {
+            const conditionMap = {
+                'Sunny': 'It will be sunny',
+                'Clear': 'It will be clear',
+                'Partly cloudy': 'It will be partly cloudy',
+                'Cloudy': 'It will be cloudy',
+                'Overcast': 'It will be overcast',
+                'Mist': 'It will be misty',
+                'Patchy rain possible': 'It might rain',
+                'Light rain': 'It will rain lightly',
+                'Moderate rain': 'It will rain moderately',
+                'Heavy rain': 'It will rain heavily',
+                'Thunderstorm': 'There will be thunderstorms',
+                'Snow': 'It will snow',
+                'Sleet': 'It will sleet',
+                'Hail': 'There may be hail',
+                'Fog': 'It will be foggy',
+                'Blizzard': 'It will be blizzard conditions',
+                'Ice pellets': 'There may be ice pellets',
+                'Other': 'The weather is unpredictable'
+            };
+            return conditionMap[condition] || 'Weather condition unknown';
         }
 
         function showWeatherData() {
             document.getElementById('skeleton-weather-icon').style.display = 'none';
             document.getElementById('skeleton-temperature').style.display = 'none';
+            document.getElementById('skeleton-condition').style.display = 'none';
             document.getElementById('skeleton-location').style.display = 'none';
 
-            document.getElementById('weather-icon').style.display = 'inline-block';
+            const weatherIconElement = document.getElementById('weather-icon');
+            weatherIconElement.style.display = 'inline-block'; 
+            weatherIconElement.offsetWidth; 
+            weatherIconElement.style.opacity = '1'; 
+            weatherIconElement.style.transform = 'scale(1)'; 
+
             document.getElementById('temperature').style.display = 'inline-block';
+            document.getElementById('condition').style.display = 'inline-block';
             document.getElementById('location').style.display = 'inline-block';
         }
 
