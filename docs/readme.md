@@ -6,11 +6,11 @@ A sleek and modern startpage designed with a dark glassmorphism style. This star
 
 ## Features
 
-- **Google Search Bar**: Quickly search the web using Google's powerful search engine.
-- **Customizable Shortcuts**: Easily access your favorite websites with six slots for personalized shortcuts.
+- **Google Search Bar**: Quickly search the web using Google.
+- **Customizable Shortcuts**: Easily access your favorite websites.
 - **Weather Widget**: Automatically fetches and displays the current weather based on your location.
-- **Customizable Background**: Personalize your startpage with a background image of your choice.
-- **3D Tilt Effect**: A stylish 3D tilt effect on the weather card, enhancing the interactive feel.
+- **Customizable Background**: Personalize your startpage.
+- **3D Tilt Effect**: A stylish 3D tilt effect on the weather card.
 
 ![3D Tilt Effect](3d.gif)
 
