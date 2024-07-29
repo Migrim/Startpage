@@ -61,169 +61,36 @@
         </div>
     </div>
 
-    <script>
-        window.addEventListener('load', function() {
-            const elements = document.querySelectorAll('.reveal');
-            elements.forEach((el, index) => {
-                setTimeout(() => {
-                    el.classList.add('show');
-                }, index * 200); 
-            });
-        });
-
-        document.querySelector('.weather-widget').addEventListener('mouseenter', function (e) {
-            const weatherWidget = e.currentTarget;
-            const maxTilt = 10; 
-
-            function tilt(event) {
-                const rect = weatherWidget.getBoundingClientRect();
-                const x = event.clientX - rect.left - rect.width / 2;
-                const y = event.clientY - rect.top - rect.height / 2;
-
-                const tiltX = (-maxTilt * y) / (rect.height / 2);
-                const tiltY = (maxTilt * x) / (rect.width / 2);
-
-                weatherWidget.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
-            }
-
-            function resetTilt() {
-                weatherWidget.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
-                weatherWidget.removeEventListener('mousemove', tilt);
-            }
-
-            weatherWidget.addEventListener('mousemove', tilt);
-            weatherWidget.addEventListener('mouseleave', resetTilt);
-        });
-
-        function handleShortcutClick(event, element) {
-            let url = element.getAttribute('data-url');
-            
-            if (url && event.shiftKey) {
-                let newUrl = prompt("Enter the new URL:", url);
-                if (newUrl) {
-                    let faviconUrl = `https://www.google.com/s2/favicons?sz=64&domain_url=${newUrl}`;
-                    element.innerHTML = `<img src="${faviconUrl}" alt="favicon" width="32" height="32">`;
-                    element.setAttribute('data-url', newUrl);
-                }
-            } else if (url) {
-                window.location.href = url;
-            } else {
-                let newUrl = prompt("Enter the URL:");
-                if (newUrl) {
-                    let faviconUrl = `https://www.google.com/s2/favicons?sz=64&domain_url=${newUrl}`;
-                    element.innerHTML = `<img src="${faviconUrl}" alt="favicon" width="32" height="32">`;
-                    element.setAttribute('data-url', newUrl);
-                }
-            }
-        }
-
-        function updateWeatherData(latitude, longitude) {
-            const apiKey = '61894ea1f7464ad581e144615242807';
-            const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${latitude},${longitude}&aqi=no`;
-
-            fetch(url)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    document.getElementById('temperature').innerText = `${data.current.temp_c}°C`;
-                    document.getElementById('condition').innerText = getConditionDescription(data.current.condition.text);
-                    document.getElementById('location').innerText = data.location.name;
-                    document.getElementById('weather-icon').innerText = getWeatherIcon(data.current.condition.text);
-                    showWeatherData();
-                })
-                .catch(error => {
-                    console.error('There was a problem with the fetch operation:', error);
-                });
-        }
-
-        function getWeatherIcon(weather) {
-            const iconMap = {
-                'Clear': { icon: 'wb_sunny', color: '#FFD700' }, 
-                'Partly cloudy': { icon: 'wb_cloudy', color: '#B0C4DE' }, 
-                'Cloudy': { icon: 'cloud', color: '#A9A9A9' }, 
-                'Overcast': { icon: 'cloud', color: '#808080' }, 
-                'Mist': { icon: 'blur_on', color: '#D3D3D3' }, 
-                'Patchy rain possible': { icon: 'umbrella', color: '#4682B4' }, 
-                'Rain': { icon: 'umbrella', color: '#0000FF' }, 
-                'Thunderstorm': { icon: 'flash_on', color: '#FF4500' }, 
-                'Snow': { icon: 'ac_unit', color: '#FFFFFF' }, 
-                'Sleet': { icon: 'ac_unit', color: '#FFFFFF' }, 
-                'Hail': { icon: 'grain', color: '#708090' }, 
-                'Fog': { icon: 'blur_on', color: '#C0C0C0' }, 
-                'Other': { icon: 'wb_sunny', color: '#FFD700' } 
-            };
-
-            const weatherData = iconMap[weather] || iconMap['Other'];
-            const weatherIconElement = document.getElementById('weather-icon');
-
-            weatherIconElement.textContent = weatherData.icon;
-            weatherIconElement.style.color = weatherData.color;
-            weatherIconElement.style.display = 'inline-block'; 
-            return weatherData.icon; 
-        }
-
-        function getConditionDescription(condition) {
-            const conditionMap = {
-                'Sunny': 'It will be sunny',
-                'Clear': 'It will be clear',
-                'Partly cloudy': 'It will be partly cloudy',
-                'Cloudy': 'It will be cloudy',
-                'Overcast': 'It will be overcast',
-                'Mist': 'It will be misty',
-                'Patchy rain possible': 'It might rain',
-                'Light rain': 'It will rain lightly',
-                'Moderate rain': 'It will rain moderately',
-                'Heavy rain': 'It will rain heavily',
-                'Thunderstorm': 'There will be thunderstorms',
-                'Snow': 'It will snow',
-                'Sleet': 'It will sleet',
-                'Hail': 'There may be hail',
-                'Fog': 'It will be foggy',
-                'Blizzard': 'It will be blizzard conditions',
-                'Ice pellets': 'There may be ice pellets',
-                'Other': 'The weather is unpredictable'
-            };
-            return conditionMap[condition] || 'Weather condition unknown';
-        }
-
-        function showWeatherData() {
-            document.getElementById('skeleton-weather-icon').style.display = 'none';
-            document.getElementById('skeleton-temperature').style.display = 'none';
-            document.getElementById('skeleton-condition').style.display = 'none';
-            document.getElementById('skeleton-location').style.display = 'none';
-
-            const weatherIconElement = document.getElementById('weather-icon');
-            weatherIconElement.style.display = 'inline-block'; 
-            weatherIconElement.offsetWidth; 
-            weatherIconElement.style.opacity = '1'; 
-            weatherIconElement.style.transform = 'scale(1)'; 
-
-            document.getElementById('temperature').style.display = 'inline-block';
-            document.getElementById('condition').style.display = 'inline-block';
-            document.getElementById('location').style.display = 'inline-block';
-        }
-
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    position => {
-                        const { latitude, longitude } = position.coords;
-                        updateWeatherData(latitude, longitude);
-                    },
-                    error => {
-                        console.error('Error occurred while fetching location:', error);
-                    }
-                );
-            } else {
-                console.log("Geolocation is not supported by this browser.");
-            }
-        }
-
-        getLocation();
-    </script>    
+    <div class="settings-icon">
+        <span class="material-icons">settings</span>
+    </div>
+    
+    <div class="settings-modal">
+        <div class="settings-content">
+            <span class="close-modal material-icons">close</span>
+            <h2>Settings</h2>
+            <div class="option">
+                <label for="color-scheme">Color Scheme:</label>
+                <select id="color-scheme">
+                    <option value="midnight">Midnight</option>
+                    <option value="dark">Dark Mode</option>
+                    <option value="light">Light Mode</option>
+                    <option value="sunset">Sunset</option>
+                    <option value="forest">Forest</option>
+                    <option value="mystic">Mystic</option> 
+                </select>
+            </div>
+            <div class="option">
+                <label for="dot-color-option">Dot Color:</label>
+                <select id="dot-color-option">
+                    <option value="default">Default</option>
+                    <option value="custom">Custom</option>
+                </select>
+                <input type="text" id="dot-color" class="custom-color-input" placeholder="#FFFFFF" pattern="^#[0-9A-Fa-f]{6}$" title="Enter a hex color code">
+            </div>
+        </div>
+    </div>    
+    
+    <script src="script.js"></script>  
 </body>
 </html>
