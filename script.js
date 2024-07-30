@@ -8,10 +8,12 @@ window.addEventListener('load', function() {
 });
 document.addEventListener('keydown', function(event) {
     var searchInput = document.getElementById('search-input');
-    if (document.activeElement !== searchInput) {
+
+    if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
         searchInput.focus();
     }
 });
+
 document.querySelector('.weather-widget').addEventListener('mouseenter', function (e) {
     const weatherWidget = e.currentTarget;
     const maxTilt = 10;
@@ -260,10 +262,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.body.style.background = 'linear-gradient(to right, #ff7e5f, #feb47b)';
                 break;
             case 'forest':
-                document.body.style.background = 'radial-gradient(circle, #0b3d0b, #1e5631, #345b63)';
+                document.body.style.background = 'linear-gradient(to bottom, #2c5d3f, #97bc62)';
+
                 break;
             case 'mystic':
-                document.body.style.background = 'linear-gradient(to right, #1a2a6c, #b21f1f, #fdbb2d)';
+                document.body.style.background = 'linear-gradient(to right, #2e3d82, #633974, #e94560)';
                 break;
             default:
                 document.body.style.background = '';
@@ -327,7 +330,7 @@ function updateWeatherData(latitude, longitude) {
             document.getElementById('temperature').innerText = `${data.current.temp_c}°C`;
             document.getElementById('condition').innerText = getConditionDescription(data.current.condition.text);
             document.getElementById('location').innerText = data.location.name;
-            document.getElementById('weather-icon').innerText = getWeatherIcon(data.current.condition.text);
+            getWeatherIcon(data.current.condition.text);
             showWeatherData();
         })
         .catch(error => {
@@ -337,28 +340,36 @@ function updateWeatherData(latitude, longitude) {
 
 function getWeatherIcon(weather) {
     const iconMap = {
-        'Clear': { icon: 'wb_sunny', color: '#FFD700' }, 
-        'Partly cloudy': { icon: 'wb_cloudy', color: '#B0C4DE' }, 
-        'Cloudy': { icon: 'cloud', color: '#A9A9A9' }, 
-        'Overcast': { icon: 'cloud', color: '#808080' }, 
-        'Mist': { icon: 'blur_on', color: '#D3D3D3' }, 
-        'Patchy rain possible': { icon: 'umbrella', color: '#4682B4' }, 
-        'Rain': { icon: 'umbrella', color: '#0000FF' }, 
-        'Thunderstorm': { icon: 'flash_on', color: '#FF4500' }, 
-        'Snow': { icon: 'ac_unit', color: '#FFFFFF' }, 
-        'Sleet': { icon: 'ac_unit', color: '#FFFFFF' }, 
-        'Hail': { icon: 'grain', color: '#708090' }, 
-        'Fog': { icon: 'blur_on', color: '#C0C0C0' }, 
-        'Other': { icon: 'wb_sunny', color: '#FFD700' } 
+        'Sunny': { day: 'clear-day.svg', night: 'clear-night.svg' },
+        'Clear': { day: 'clear-day.svg', night: 'clear-night.svg' },
+        'Partly cloudy': { day: 'partly-cloudy-day.svg', night: 'partly-cloudy-night.svg' },
+        'Cloudy': { day: 'cloudy.svg', night: 'cloudy.svg' },
+        'Overcast': { day: 'overcast.svg', night: 'overcast.svg' },
+        'Mist': { day: 'mist.svg', night: 'mist.svg' },
+        'Patchy rain possible': { day: 'partly-cloudy-day-rain.svg', night: 'partly-cloudy-night-rain.svg' },
+        'Rain': { day: 'rain.svg', night: 'rain.svg' },
+        'Thunderstorm': { day: 'thunderstorms.svg', night: 'thunderstorms.svg' },
+        'Snow': { day: 'snow.svg', night: 'snow.svg' },
+        'Sleet': { day: 'sleet.svg', night: 'sleet.svg' },
+        'Hail': { day: 'hail.svg', night: 'hail.svg' },
+        'Fog': { day: 'fog-day.svg', night: 'fog-night.svg' },
+        'Blizzard': { day: 'snow.svg', night: 'snow.svg' },
+        'Ice pellets': { day: 'sleet.svg', night: 'sleet.svg' },
+        'Other': { day: 'star.svg', night: 'star.svg' }
     };
 
-    const weatherData = iconMap[weather] || iconMap['Other'];
+    const hour = new Date().getHours();
+    const isNight = hour >= 18 || hour < 6;
+    const variant = isNight ? 'night' : 'day';
+
+    const weatherIconFile = iconMap[weather] ? iconMap[weather][variant] : iconMap['Other'][variant];
     const weatherIconElement = document.getElementById('weather-icon');
 
-    weatherIconElement.textContent = weatherData.icon;
-    weatherIconElement.style.color = weatherData.color;
-    weatherIconElement.style.display = 'inline-block'; 
-    return weatherData.icon; 
+    if (weatherIconElement) {
+        weatherIconElement.innerHTML = `<img src="svg/${weatherIconFile}" alt="${weather}" style="width: 90px; height: 90px;">`;
+    } else {
+        console.error('Element with id "weather-icon" not found.');
+    }
 }
 
 function getConditionDescription(condition) {

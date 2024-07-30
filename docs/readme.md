@@ -20,6 +20,10 @@ A sleek and modern startpage designed with a dark glassmorphism style. This star
 
 The design embraces a clean and customizable dark mode, ensuring a comfortable browsing experience in low-light environments.
 
+## SVG Icons
+
+The weather widget utilizes SVG icons from the [Weather Icons](https://github.com/basmilius/weather-icons) library by Basmilius. These icons provide a visually consistent and clean representation of weather conditions.
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
