@@ -6,7 +6,12 @@ window.addEventListener('load', function() {
         }, index * 200); 
     });
 });
-
+document.addEventListener('keydown', function(event) {
+    var searchInput = document.getElementById('search-input');
+    if (document.activeElement !== searchInput) {
+        searchInput.focus();
+    }
+});
 document.querySelector('.weather-widget').addEventListener('mouseenter', function (e) {
     const weatherWidget = e.currentTarget;
     const maxTilt = 10;
@@ -29,32 +34,6 @@ document.querySelector('.weather-widget').addEventListener('mouseenter', functio
 
     weatherWidget.addEventListener('mousemove', tilt);
     weatherWidget.addEventListener('mouseleave', resetTilt);
-});
-
-document.querySelectorAll('.shortcut').forEach(shortcut => {
-    shortcut.addEventListener('mouseenter', function (e) {
-        const item = e.currentTarget;
-        const maxTilt = 10;
-
-        function tilt(event) {
-            const rect = item.getBoundingClientRect();
-            const x = event.clientX - rect.left - rect.width / 2;
-            const y = event.clientY - rect.top - rect.height / 2;
-
-            const tiltX = (-maxTilt * y) / (rect.height / 2);
-            const tiltY = (maxTilt * x) / (rect.width / 2);
-
-            item.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
-        }
-
-        function resetTilt() {
-            item.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
-            item.removeEventListener('mousemove', tilt);
-        }
-
-        item.addEventListener('mousemove', tilt);
-        item.addEventListener('mouseleave', resetTilt);
-    });
 });
 
 function saveShortcut(element) {
@@ -185,6 +164,57 @@ document.getElementById('color-scheme').addEventListener('change', function() {
     }
     localStorage.setItem('colorScheme', selectedScheme);
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadShortcuts();
+    setupTooltips();
+});
+
+function setupTooltips() {
+    const container = document.querySelector('.shortcuts');
+    container.addEventListener('mouseover', function(event) {
+        const shortcut = event.target.closest('.shortcut');
+        if (shortcut) {
+            const url = shortcut.getAttribute('data-url');
+            if (url) {
+                // Remove any existing tooltip
+                const existingTooltip = document.querySelector('.tooltip');
+                if (existingTooltip) {
+                    existingTooltip.remove();
+                }
+
+                const tooltip = document.createElement('div');
+                tooltip.classList.add('tooltip');
+                tooltip.textContent = url;
+                document.body.appendChild(tooltip);
+
+                shortcut.addEventListener('mousemove', (event) => {
+                    updateTooltipPosition(event, tooltip, shortcut);
+                });
+
+                shortcut.addEventListener('mouseleave', () => {
+                    tooltip.remove();
+                });
+            }
+        }
+    });
+}
+
+function updateTooltipPosition(event, tooltip, shortcut) {
+    const rect = shortcut.getBoundingClientRect();
+    const tooltipWidth = tooltip.offsetWidth;
+    const offset = 10; // Fixed offset from the element
+
+    tooltip.style.left = `${rect.left + window.scrollX + (rect.width / 2) - (tooltipWidth / 2)}px`;
+    tooltip.style.top = `${rect.bottom + window.scrollY + offset}px`;
+}
+
+window.addEventListener('resize', function() {
+    document.querySelectorAll('.tooltip').forEach(tooltip => {
+        tooltip.style.display = 'none';
+    });
+});
+
 
 document.addEventListener('DOMContentLoaded', function() {
     loadSettings();
