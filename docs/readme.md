@@ -11,8 +11,14 @@ A sleek and modern startpage designed with a dark glassmorphism style. This star
 - **Weather Widget**: Automatically fetches and displays the current weather based on your location.
 - **Customizable Background**: Personalize your startpage.
 - **3D Tilt Effect**: A stylish 3D tilt effect on the weather card.
+- **Shortcut Rows Configuration**: Customize the number of shortcut rows (1-3) displayed on the startpage through the settings.
+- **Changeable City**: Update the city displayed in the weather widget via the settings.
 
 ![3D Tilt Effect](3d.gif)
+
+## Shortcut Renaming
+
+You can rename a shortcut by using `Shift + Left Click` on the shortcut you wish to rename.
 
 ## Dark Mode
 
