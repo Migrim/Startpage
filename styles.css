@@ -138,11 +138,15 @@ input[type="text"] {
 
 .shortcuts {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     gap: 15px;
     margin-top: 20px;
 }
-
+.shortcut-row {
+    display: flex;
+    gap: 15px; 
+}
 .shortcut {
     display: flex;
     align-items: center;

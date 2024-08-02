@@ -66,30 +66,56 @@ function loadShortcuts() {
     
     container.innerHTML = ''; 
 
-    Object.keys(shortcuts).slice(0, 6).forEach(url => {
+    let shortcutRows = parseInt(localStorage.getItem('shortcutRows') || '1');
+    let maxShortcuts = shortcutRows * 6;
+
+    let rowCount = 0;
+    let rowContainer = document.createElement('div');
+    rowContainer.classList.add('shortcut-row');
+    container.appendChild(rowContainer);
+
+    Object.keys(shortcuts).slice(0, maxShortcuts).forEach((url, index) => {
+        if (index % 6 === 0 && index !== 0) {
+            rowContainer = document.createElement('div');
+            rowContainer.classList.add('shortcut-row');
+            container.appendChild(rowContainer);
+            rowCount++;
+        }
         let element = document.createElement('div');
         element.classList.add('shortcut');
         element.setAttribute('data-url', url);
         element.setAttribute('data-old-url', url); 
         element.innerHTML = `<img src="${shortcuts[url]}" alt="favicon" width="32" height="32">`;
         
-        container.appendChild(element);
+        rowContainer.appendChild(element);
         
         element.addEventListener('click', function(event) {
             handleShortcutClick(event, element);
         });
     });
 
-    for (let i = Object.keys(shortcuts).length; i < 6; i++) {
+    for (let i = Object.keys(shortcuts).length; i < maxShortcuts; i++) {
+        if (i % 6 === 0 && i !== 0) {
+            rowContainer = document.createElement('div');
+            rowContainer.classList.add('shortcut-row');
+            container.appendChild(rowContainer);
+            rowCount++;
+        }
         let placeholder = document.createElement('div');
         placeholder.classList.add('shortcut');
         placeholder.innerHTML = `<span class="material-icons">add</span>`;
         placeholder.addEventListener('click', function(event) {
             handleShortcutClick(event, placeholder);
         });
-        container.appendChild(placeholder);
+        rowContainer.appendChild(placeholder);
     }
 }
+
+document.getElementById('shortcut-rows').addEventListener('change', function() {
+    const rows = this.value;
+    localStorage.setItem('shortcutRows', rows);
+    loadShortcuts();
+});
 
 function handleShortcutClick(event, element) {
     let url = element.getAttribute('data-url');
@@ -194,6 +220,12 @@ document.addEventListener('DOMContentLoaded', function() {
         updateWeatherDataByCity(city);
     });
 
+    document.getElementById('shortcut-rows').addEventListener('change', function() {
+        const rows = this.value;
+        localStorage.setItem('shortcutRows', rows);
+        loadShortcuts();
+    });
+
     function setColorScheme(scheme) {
         switch (scheme) {
             case 'dark':
@@ -264,6 +296,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (savedCity) {
             document.getElementById('city').value = savedCity;
             updateWeatherDataByCity(savedCity);
+        }
+
+        const savedShortcutRows = localStorage.getItem('shortcutRows');
+        if (savedShortcutRows) {
+            document.getElementById('shortcut-rows').value = savedShortcutRows;
+            loadShortcuts();
         }
     }
 });
@@ -340,7 +378,7 @@ function getWeatherIcon(weather) {
     };
 
     const hour = new Date().getHours();
-    const isNight = hour >= 18 || hour < 6;
+    const isNight = hour >= 21 || hour < 6;
     const variant = isNight ? 'night' : 'day';
 
     const weatherIconFile = iconMap[weather] ? iconMap[weather][variant] : iconMap['Other'][variant];
