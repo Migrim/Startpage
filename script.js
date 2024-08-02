@@ -5,7 +5,9 @@ window.addEventListener('load', function() {
             el.classList.add('show');
         }, index * 200); 
     });
+    loadSettings();
 });
+
 document.addEventListener('keydown', function(event) {
     var searchInput = document.getElementById('search-input');
 
@@ -115,16 +117,6 @@ function handleShortcutClick(event, element) {
     }
 }
 
-window.addEventListener('load', function() {
-    loadShortcuts();
-    const elements = document.querySelectorAll('.reveal');
-    elements.forEach((el, index) => {
-        setTimeout(() => {
-            el.classList.add('show');
-        }, index * 200); 
-    });
-});
-
 document.querySelector('.settings-icon').addEventListener('click', function() {
     document.querySelector('.settings-modal').classList.toggle('show');
 });
@@ -168,57 +160,6 @@ document.getElementById('color-scheme').addEventListener('change', function() {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-    loadShortcuts();
-    setupTooltips();
-});
-
-function setupTooltips() {
-    const container = document.querySelector('.shortcuts');
-    container.addEventListener('mouseover', function(event) {
-        const shortcut = event.target.closest('.shortcut');
-        if (shortcut) {
-            const url = shortcut.getAttribute('data-url');
-            if (url) {
-                // Remove any existing tooltip
-                const existingTooltip = document.querySelector('.tooltip');
-                if (existingTooltip) {
-                    existingTooltip.remove();
-                }
-
-                const tooltip = document.createElement('div');
-                tooltip.classList.add('tooltip');
-                tooltip.textContent = url;
-                document.body.appendChild(tooltip);
-
-                shortcut.addEventListener('mousemove', (event) => {
-                    updateTooltipPosition(event, tooltip, shortcut);
-                });
-
-                shortcut.addEventListener('mouseleave', () => {
-                    tooltip.remove();
-                });
-            }
-        }
-    });
-}
-
-function updateTooltipPosition(event, tooltip, shortcut) {
-    const rect = shortcut.getBoundingClientRect();
-    const tooltipWidth = tooltip.offsetWidth;
-    const offset = 10; // Fixed offset from the element
-
-    tooltip.style.left = `${rect.left + window.scrollX + (rect.width / 2) - (tooltipWidth / 2)}px`;
-    tooltip.style.top = `${rect.bottom + window.scrollY + offset}px`;
-}
-
-window.addEventListener('resize', function() {
-    document.querySelectorAll('.tooltip').forEach(tooltip => {
-        tooltip.style.display = 'none';
-    });
-});
-
-
-document.addEventListener('DOMContentLoaded', function() {
     loadSettings();
 
     document.getElementById('color-scheme').addEventListener('change', function() {
@@ -245,6 +186,12 @@ document.addEventListener('DOMContentLoaded', function() {
             setCircleColors(color);
             localStorage.setItem('dotColor', color);
         }
+    });
+
+    document.getElementById('city').addEventListener('input', function() {
+        const city = this.value;
+        localStorage.setItem('city', city);
+        updateWeatherDataByCity(city);
     });
 
     function setColorScheme(scheme) {
@@ -312,6 +259,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         }
+
+        const savedCity = localStorage.getItem('city');
+        if (savedCity) {
+            document.getElementById('city').value = savedCity;
+            updateWeatherDataByCity(savedCity);
+        }
     }
 });
 
@@ -338,17 +291,45 @@ function updateWeatherData(latitude, longitude) {
         });
 }
 
+function updateWeatherDataByCity(city) {
+    const apiKey = '61894ea1f7464ad581e144615242807';
+    const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}&aqi=no`;
+
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById('temperature').innerText = `${data.current.temp_c}°C`;
+            document.getElementById('condition').innerText = getConditionDescription(data.current.condition.text);
+            document.getElementById('location').innerText = data.location.name;
+            getWeatherIcon(data.current.condition.text);
+            showWeatherData();
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+}
+
 function getWeatherIcon(weather) {
     const iconMap = {
         'Sunny': { day: 'clear-day.svg', night: 'clear-night.svg' },
         'Clear': { day: 'clear-day.svg', night: 'clear-night.svg' },
         'Partly Cloudy': { day: 'partly-cloudy-day.svg', night: 'partly-cloudy-night.svg' },
         'Cloudy': { day: 'cloudy.svg', night: 'cloudy.svg' },
-        'Overcast': { day: 'overcast.svg', night: 'overcast.svg' },
+        'Overcast': { day: 'overcast-day.svg', night: 'overcast-night.svg' },
         'Mist': { day: 'mist.svg', night: 'mist.svg' },
-        'Patchy Rain Possible': { day: 'partly-cloudy-day-rain.svg', night: 'partly-cloudy-night-rain.svg' },
+        'Light rain shower': { day: 'partly-cloudy-day-rain.svg', night: 'partly-cloudy-night-rain.svg' },
+        'Patchy rain nearby': { day: 'partly-cloudy-day-drizzle.svg', night: 'partly-cloudy-night-drizzle.svg' },
+        'Light drizzle': { day: 'partly-cloudy-day-drizzle.svg', night: 'partly-cloudy-night-drizzle.svg' },
         'Rain': { day: 'rain.svg', night: 'rain.svg' },
-        'Thunderstorm': { day: 'thunderstorms.svg', night: 'thunderstorms.svg' },
+        'Moderate or heavy rain shower': { day: 'rain.svg', night: 'rain.svg' },
+        'Thunderstorm': { day: 'thunderstorms-day-extreme-rain.svg', night: 'thunderstorms-night-extreme-rain.svg' },
+        'Thundery outbreaks in nearby': { day: 'thunderstorms-day.svg', night: 'thunderstorms-night.svg' },
+        'Patchy light rain in area with thunder': { day: 'thunderstorms-day-rain.svg', night: 'thunderstorms-night-rain.svg' },
         'Snow': { day: 'snow.svg', night: 'snow.svg' },
         'Sleet': { day: 'sleet.svg', night: 'sleet.svg' },
         'Hail': { day: 'hail.svg', night: 'hail.svg' },
@@ -374,25 +355,30 @@ function getWeatherIcon(weather) {
 
 function getConditionDescription(condition) {
     const conditionMap = {
-        'Sunny': 'It is sunny',
-        'Clear': 'It is clear',
-        'Partly Cloudy': 'It is partly cloudy',
-        'Cloudy': 'It is cloudy',
-        'Overcast': 'It is overcast',
-        'Mist': 'It is misty',
-        'Patchy rain possible': 'There is a chance of patchy rain',
-        'Light rain': 'It is raining lightly',
-        'Moderate rain': 'It is raining moderately',
-        'Heavy rain': 'It is raining heavily',
-        'Thunderstorm': 'There is a thunderstorm',
-        'Snow': 'It is snowing',
-        'Sleet': 'It is sleeting',
-        'Hail': 'There is hail',
-        'Fog': 'It is foggy',
-        'Blizzard': 'There are blizzard conditions',
-        'Ice pellets': 'There are ice pellets',
-        'Other': 'The weather is unpredictable'
-    };
+        'Sunny': 'Bright and sunny',
+        'Clear': 'Clear skies',
+        'Partly Cloudy': 'Partly cloudy skies',
+        'Cloudy': 'Cloudy skies',
+        'Overcast': 'Overcast conditions',
+        'Mist': 'Misty conditions',
+        'Light rain shower': 'Light rain showers',
+        'Patchy rain nearby': 'Intermittent rain in the vicinity',
+        'Light Rain': 'Light rain',
+        'Light drizzle': 'Light drizzle',
+        'Moderate Rain': 'Moderate rain',
+        'Heavy Rain': 'Heavy rain',
+        'Moderate or heavy rain shower': 'Moderate to heavy rain showers',
+        'Thunderstorm': 'Thunderstorms in the area',
+        'Thundery outbreaks in nearby': 'Thunderstorms nearby',
+        'Patchy light rain in area with thunder': 'Light rain and thunder nearby',
+        'Snow': 'Snowfall',
+        'Sleet': 'Sleet showers',
+        'Hail': 'Hail showers',
+        'Fog': 'Foggy conditions',
+        'Blizzard': 'Blizzard conditions',
+        'Ice Pellets': 'Ice pellets falling',
+        'Other': 'Unpredictable weather'
+    };    
     return conditionMap[condition] || `Weather condition unknown: ${condition}`;
 }
 
@@ -441,4 +427,57 @@ function showNoLocationData() {
     showWeatherData();
 }
 
-getLocation();
+document.addEventListener('DOMContentLoaded', function() {
+    loadShortcuts();
+    setupTooltips();
+    const savedCity = localStorage.getItem('city');
+    if (savedCity) {
+        updateWeatherDataByCity(savedCity);
+    } else {
+        getLocation();
+    }
+});
+
+function setupTooltips() {
+    const container = document.querySelector('.shortcuts');
+    container.addEventListener('mouseover', function(event) {
+        const shortcut = event.target.closest('.shortcut');
+        if (shortcut) {
+            const url = shortcut.getAttribute('data-url');
+            if (url) {
+                const existingTooltip = document.querySelector('.tooltip');
+                if (existingTooltip) {
+                    existingTooltip.remove();
+                }
+
+                const tooltip = document.createElement('div');
+                tooltip.classList.add('tooltip');
+                tooltip.textContent = url;
+                document.body.appendChild(tooltip);
+
+                shortcut.addEventListener('mousemove', (event) => {
+                    updateTooltipPosition(event, tooltip, shortcut);
+                });
+
+                shortcut.addEventListener('mouseleave', () => {
+                    tooltip.remove();
+                });
+            }
+        }
+    });
+}
+
+function updateTooltipPosition(event, tooltip, shortcut) {
+    const rect = shortcut.getBoundingClientRect();
+    const tooltipWidth = tooltip.offsetWidth;
+    const offset = 10;
+
+    tooltip.style.left = `${rect.left + window.scrollX + (rect.width / 2) - (tooltipWidth / 2)}px`;
+    tooltip.style.top = `${rect.bottom + window.scrollY + offset}px`;
+}
+
+window.addEventListener('resize', function() {
+    document.querySelectorAll('.tooltip').forEach(tooltip => {
+        tooltip.style.display = 'none';
+    });
+});
