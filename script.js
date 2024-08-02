@@ -16,6 +16,58 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+    const clockToggle = document.getElementById('clock-toggle');
+    const secondsToggle = document.getElementById('seconds-toggle');
+    const clockWidget = document.getElementById('clock-widget');
+    const timeElement = document.getElementById('time');
+
+    function updateClock() {
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const seconds = now.getSeconds().toString().padStart(2, '0');
+        const showSeconds = secondsToggle.checked;
+        timeElement.textContent = showSeconds ? `${hours}:${minutes}:${seconds}` : `${hours}:${minutes}`;
+    }
+
+    let clockInterval;
+
+    function toggleClockWidget(isVisible) {
+        if (isVisible) {
+            clockWidget.style.display = 'block';
+            updateClock();
+            clockInterval = setInterval(updateClock, 1000);
+        } else {
+            clockWidget.style.display = 'none';
+            clearInterval(clockInterval);
+        }
+    }
+
+    clockToggle.addEventListener('change', () => {
+        const isChecked = clockToggle.checked;
+        localStorage.setItem('clockWidgetVisible', isChecked);
+        toggleClockWidget(isChecked);
+    });
+
+    secondsToggle.addEventListener('change', () => {
+        localStorage.setItem('clockShowSeconds', secondsToggle.checked);
+        updateClock();
+    });
+
+    const savedClockWidgetState = localStorage.getItem('clockWidgetVisible');
+    if (savedClockWidgetState !== null) {
+        const isVisible = JSON.parse(savedClockWidgetState);
+        clockToggle.checked = isVisible;
+        toggleClockWidget(isVisible);
+    }
+
+    const savedClockShowSeconds = localStorage.getItem('clockShowSeconds');
+    if (savedClockShowSeconds !== null) {
+        secondsToggle.checked = JSON.parse(savedClockShowSeconds);
+    }
+});
+
 document.querySelector('.weather-widget').addEventListener('mouseenter', function (e) {
     const weatherWidget = e.currentTarget;
     const maxTilt = 10;

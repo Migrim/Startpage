@@ -15,6 +15,10 @@
     <div class="background-circle circle4"></div>
     <div class="background-circle circle5"></div>
 
+    <div class="clock-widget" id="clock-widget">
+        <div id="time"></div>
+    </div>    
+
     <div class="weather-widget">
         <div class="weather-icon">
             <span class="material-icons skeleton-icon" id="skeleton-weather-icon"></span>
@@ -101,6 +105,20 @@
                     <option value="3">3</option>
                 </select>
             </div>
+            <div class="option">
+                <label for="clock-toggle">Show Clock Widget:</label>
+                <label class="switch">
+                    <input type="checkbox" id="clock-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="option">
+                <label for="seconds-toggle">Show Seconds:</label>
+                <label class="switch">
+                    <input type="checkbox" id="seconds-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>                                 
             <div class="credits">
                 <p>Made by Migrim</p>
                 <a href="https://one-auth.net" target="_blank" class="credits-link">one-auth.net</a>
