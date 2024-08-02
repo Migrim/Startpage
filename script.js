@@ -342,11 +342,11 @@ function getWeatherIcon(weather) {
     const iconMap = {
         'Sunny': { day: 'clear-day.svg', night: 'clear-night.svg' },
         'Clear': { day: 'clear-day.svg', night: 'clear-night.svg' },
-        'Partly cloudy': { day: 'partly-cloudy-day.svg', night: 'partly-cloudy-night.svg' },
+        'Partly Cloudy': { day: 'partly-cloudy-day.svg', night: 'partly-cloudy-night.svg' },
         'Cloudy': { day: 'cloudy.svg', night: 'cloudy.svg' },
         'Overcast': { day: 'overcast.svg', night: 'overcast.svg' },
         'Mist': { day: 'mist.svg', night: 'mist.svg' },
-        'Patchy rain possible': { day: 'partly-cloudy-day-rain.svg', night: 'partly-cloudy-night-rain.svg' },
+        'Patchy Rain Possible': { day: 'partly-cloudy-day-rain.svg', night: 'partly-cloudy-night-rain.svg' },
         'Rain': { day: 'rain.svg', night: 'rain.svg' },
         'Thunderstorm': { day: 'thunderstorms.svg', night: 'thunderstorms.svg' },
         'Snow': { day: 'snow.svg', night: 'snow.svg' },
@@ -354,7 +354,7 @@ function getWeatherIcon(weather) {
         'Hail': { day: 'hail.svg', night: 'hail.svg' },
         'Fog': { day: 'fog-day.svg', night: 'fog-night.svg' },
         'Blizzard': { day: 'snow.svg', night: 'snow.svg' },
-        'Ice pellets': { day: 'sleet.svg', night: 'sleet.svg' },
+        'Ice Pellets': { day: 'sleet.svg', night: 'sleet.svg' },
         'Other': { day: 'star.svg', night: 'star.svg' }
     };
 
@@ -374,26 +374,26 @@ function getWeatherIcon(weather) {
 
 function getConditionDescription(condition) {
     const conditionMap = {
-        'Sunny': 'It will be sunny',
-        'Clear': 'It will be clear',
-        'Partly cloudy': 'It will be partly cloudy',
-        'Cloudy': 'It will be cloudy',
-        'Overcast': 'It will be overcast',
-        'Mist': 'It will be misty',
-        'Patchy rain possible': 'It might rain',
-        'Light rain': 'It will rain lightly',
-        'Moderate rain': 'It will rain moderately',
-        'Heavy rain': 'It will rain heavily',
-        'Thunderstorm': 'There will be thunderstorms',
-        'Snow': 'It will snow',
-        'Sleet': 'It will sleet',
-        'Hail': 'There may be hail',
-        'Fog': 'It will be foggy',
-        'Blizzard': 'It will be blizzard conditions',
-        'Ice pellets': 'There may be ice pellets',
+        'Sunny': 'It is sunny',
+        'Clear': 'It is clear',
+        'Partly Cloudy': 'It is partly cloudy',
+        'Cloudy': 'It is cloudy',
+        'Overcast': 'It is overcast',
+        'Mist': 'It is misty',
+        'Patchy rain possible': 'There is a chance of patchy rain',
+        'Light rain': 'It is raining lightly',
+        'Moderate rain': 'It is raining moderately',
+        'Heavy rain': 'It is raining heavily',
+        'Thunderstorm': 'There is a thunderstorm',
+        'Snow': 'It is snowing',
+        'Sleet': 'It is sleeting',
+        'Hail': 'There is hail',
+        'Fog': 'It is foggy',
+        'Blizzard': 'There are blizzard conditions',
+        'Ice pellets': 'There are ice pellets',
         'Other': 'The weather is unpredictable'
     };
-    return conditionMap[condition] || 'Weather condition unknown';
+    return conditionMap[condition] || `Weather condition unknown: ${condition}`;
 }
 
 function showWeatherData() {
