@@ -439,3 +439,18 @@ input[type="text"] {
     font-size: 14px;
     z-index: 2;
 }
+.credits {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.credits-link {
+    display: block;
+    margin-top: -15px; 
+    color: #749ff5;
+    text-decoration: none;
+}
+
+.credits-link:hover {
+    text-decoration: underline;
+}
