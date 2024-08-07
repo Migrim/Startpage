@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Existing code...
     const elements = document.querySelectorAll('.reveal');
     elements.forEach((el, index) => {
         setTimeout(() => {
@@ -36,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const secondsToggle = document.getElementById('seconds-toggle');
     const clockWidget = document.getElementById('clock-widget');
     const timeElement = document.getElementById('time');
+    const secondsOption = document.querySelector('.option:nth-child(8)'); // Assuming the seconds toggle is the 8th option
 
     function updateClock() {
         const now = new Date();
@@ -53,9 +53,11 @@ document.addEventListener('DOMContentLoaded', () => {
             clockWidget.style.display = 'block';
             updateClock();
             clockInterval = setInterval(updateClock, 1000);
+            secondsOption.style.display = 'block'; // Show seconds option
         } else {
             clockWidget.style.display = 'none';
             clearInterval(clockInterval);
+            secondsOption.style.display = 'none'; // Hide seconds option
         }
     }
 
@@ -280,15 +282,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         localStorage.setItem('dotColorOption', this.value);
     });
-
+    
     document.getElementById('dot-color').addEventListener('input', function() {
         const color = this.value;
-        if (/^#[0-9A-Fa-f]{6}$/.test(color)) {
-            setCircleColors(color);
-            localStorage.setItem('dotColor', color);
+        if (/^[0-9A-Fa-f]{6}$/.test(color)) {
+            const fullColor = `#${color}`;
+            setCircleColors(fullColor);
+            localStorage.setItem('dotColor', fullColor);
         }
     });
-
+    
     document.getElementById('city').addEventListener('input', function() {
         const city = this.value;
         localStorage.setItem('city', city);
@@ -462,7 +465,7 @@ function getWeatherIcon(weather) {
     const weatherIconElement = document.getElementById('weather-icon');
 
     if (weatherIconElement) {
-        weatherIconElement.innerHTML = `<img src="svg/${weatherIconFile}" alt="${weather}" style="width: 90px; height: 90px;">`;
+        weatherIconElement.innerHTML = `<img src="svg/${weatherIconFile}" alt="${weather}" style="width: 90px; height: 90px;" draggable="false">`;
     } else {
         console.error('Element with id "weather-icon" not found.');
     }

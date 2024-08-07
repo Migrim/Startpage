@@ -10,6 +10,7 @@ body {
     font-family: Arial, sans-serif;
     position: relative;
     overflow: hidden;
+    user-select: none; 
 }
 
 .background-circle {
@@ -111,6 +112,7 @@ input[type="text"] {
     background-color: transparent;
     color: #ffffff;
     font-size: 16px;
+    user-select: text;
 }
 
 @keyframes randomMovement {
@@ -403,7 +405,16 @@ input[type="text"] {
     font-size: 14px;
     transition: background 0.3s ease;
 }
+.hex-input-container {
+    display: flex;
+    align-items: center;
+}
 
+.hex-symbol {
+    margin-right: 5px;
+    color: #ffffff;
+    font-size: 16px;
+}
 .custom-color-input {
     display: none; 
     margin-top: 10px; 
@@ -459,7 +470,7 @@ input[type="text"] {
     background: rgba(20, 20, 20, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.027);
     border-radius: 15px;
-    padding: 20px;
+    padding: 10px;
     backdrop-filter: blur(5px);
     box-shadow: 0 4px 10px rgba(20, 20, 20, 0.4);
     color: #ffffff;
