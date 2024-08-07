@@ -422,7 +422,9 @@ function updateWeatherDataByCity(city) {
             document.getElementById('temperature').innerText = `${data.current.temp_c}°C`;
             document.getElementById('condition').innerText = getConditionDescription(data.current.condition.text);
             document.getElementById('location').innerText = data.location.name;
-            getWeatherIcon(data.current.condition.text);
+            const localTime = data.location.localtime;
+            const isNight = checkIfNight(localTime);
+            getWeatherIcon(data.current.condition.text, isNight);
             showWeatherData();
         })
         .catch(error => {
@@ -430,7 +432,12 @@ function updateWeatherDataByCity(city) {
         });
 }
 
-function getWeatherIcon(weather) {
+function checkIfNight(localTime) {
+    const hour = new Date(localTime).getHours();
+    return hour >= 21 || hour < 6;
+}
+
+function getWeatherIcon(weather, isNight) {
     const iconMap = {
         'Sunny': { day: 'clear-day.svg', night: 'clear-night.svg' },
         'Clear': { day: 'clear-day.svg', night: 'clear-night.svg' },
@@ -457,8 +464,6 @@ function getWeatherIcon(weather) {
         'Other': { day: 'star.svg', night: 'star.svg' }
     };
 
-    const hour = new Date().getHours();
-    const isNight = hour >= 21 || hour < 6;
     const variant = isNight ? 'night' : 'day';
 
     const weatherIconFile = iconMap[weather] ? iconMap[weather][variant] : iconMap['Other'][variant];

@@ -1,6 +1,6 @@
 # Dark Glassmorphism Startpage
 
-![Startpage Design](image.gif)
+![Startpage Design](image.png)
 
 A sleek and modern startpage designed with a dark glassmorphism style. This startpage includes a Google search bar, six customizable shortcuts, a weather widget that automatically detects your location, and a customizable background.
 
