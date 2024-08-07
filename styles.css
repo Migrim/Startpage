@@ -470,7 +470,16 @@ input[type="text"] {
     top: 20px;
     left: 20px;
     z-index: 2;
+    opacity: 0;
+    transform: translateX(-100%);
+    transition: opacity 1s ease, transform 1s ease;
 }
+
+.clock-widget.fly-in {
+    opacity: 1;
+    transform: translateX(0);
+}
+
 .switch {
     margin-top: 12px;
     position: relative;

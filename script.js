@@ -1,4 +1,19 @@
-window.addEventListener('load', function() {
+document.addEventListener('DOMContentLoaded', function() {
+    const searchForm = document.getElementById('search-form');
+    const searchInput = document.getElementById('search-input');
+
+    searchForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const query = searchInput.value.trim();
+
+        if (query.match(/^https?:\/\//)) {
+            window.location.href = query;
+        } else {
+            window.location.href = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+        }
+    });
+
+    // Existing code...
     const elements = document.querySelectorAll('.reveal');
     elements.forEach((el, index) => {
         setTimeout(() => {
@@ -67,6 +82,14 @@ document.addEventListener('DOMContentLoaded', () => {
         secondsToggle.checked = JSON.parse(savedClockShowSeconds);
     }
 });
+
+window.onload = function() {
+    const clockWidget = document.getElementById('clock-widget');
+    clockWidget.style.display = 'block';
+    setTimeout(() => {
+        clockWidget.classList.add('fly-in');
+    }, 100); 
+};
 
 document.querySelector('.weather-widget').addEventListener('mouseenter', function (e) {
     const weatherWidget = e.currentTarget;
